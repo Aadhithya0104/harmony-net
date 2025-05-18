@@ -20,7 +20,7 @@ export default function Home() {
               animate={{ x: 0 }}
               className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
             >
-              SafeHer
+              Harmony-Net
             </motion.h1>
             <div className="flex items-center gap-4">
               <motion.button
@@ -168,7 +168,7 @@ export default function Home() {
               Key Features
             </h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Discover how SafeHer keeps you protected with our innovative safety features
+              Discover how Harmony-Net keeps you protected with our innovative safety features
             </p>
           </motion.div>
           <div className="grid md:grid-cols-3 gap-8">

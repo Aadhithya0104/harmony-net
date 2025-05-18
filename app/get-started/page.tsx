@@ -125,7 +125,7 @@ export default function GetStarted() {
                 animate={{ x: 0 }}
                 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent cursor-pointer"
               >
-                SafeHer
+                Harmony-Net
               </motion.h1>
             </Link>
             <div className="flex items-center gap-4">
