@@ -30,6 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       );
     }
 
+    
     // Generate article using GPT-4
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
