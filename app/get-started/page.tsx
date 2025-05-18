@@ -20,6 +20,7 @@ import {
   FaSun,
   FaBars
 } from 'react-icons/fa';
+import Header from '@/app/components/Header';
 
 export default function GetStarted() {
   const [isDark, setIsDark] = useState(false);
@@ -123,56 +124,7 @@ export default function GetStarted() {
 
   return (
     <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/30 dark:bg-background/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <Link href="/">
-              <motion.h1 
-                initial={{ x: -100 }}
-                animate={{ x: 0 }}
-                className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent cursor-pointer"
-              >
-                Harmony-Net
-              </motion.h1>
-            </Link>
-            <div className="flex items-center gap-4">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsDark(!isDark)}
-                className="p-2 rounded-full bg-purple-100 dark:bg-gray-800"
-              >
-                {isDark ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
-              </motion.button>
-              <button 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-800"
-              >
-                <FaBars className="text-xl" />
-              </button>
-            </div>
-          </div>
-          {/* Mobile Menu */}
-          <motion.div 
-            initial={false}
-            animate={{ height: isMenuOpen ? 'auto' : 0 }}
-            className="lg:hidden overflow-hidden"
-          >
-            <div className="py-4 space-y-4">
-              {['Home', 'Features', 'Safety Tips', 'Community', 'Contact'].map((item, index) => (
-                <a 
-                  key={index}
-                  href="#"
-                  className="block text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </nav>
+      <Header isDark={isDark} setIsDark={setIsDark} />
 
       {/* Content */}
       <div className="pt-24 sm:pt-32 px-4 sm:px-6 lg:px-8">
