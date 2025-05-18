@@ -33,7 +33,7 @@ export default function SOSPage() {
   };
 
   return (
-    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
+    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'} pt-40`}>
       <Header isDark={isDark} setIsDark={toggleTheme} />
 
       <div className="relative min-h-screen flex items-center justify-center bg-blue-500/50 px-4 overflow-hidden">
