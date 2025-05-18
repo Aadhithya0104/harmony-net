@@ -19,7 +19,7 @@ export default function Home() {
   }, [isDark]);
 
   return (
-    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'} pt-40 sm:pt-48 lg:pt-56 xl:pt-64`}>
+    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'} pt-40 sm:pt-48 lg:pt-56 xl:pt-6`}>
       <Header isDark={isDark} setIsDark={setIsDark} />
 
       {/* Hero Section */}
