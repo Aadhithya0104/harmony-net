@@ -15,12 +15,12 @@ export default function Header({ isDark, setIsDark }: HeaderProps) {
 
   return (
     <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/30 dark:bg-background/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center">
           <motion.h1 
             initial={{ x: -100 }}
             animate={{ x: 0 }}
-            className="text-2xl sm:text-8xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
+            className="text-2xl sm:text-8xl font-bold leading-normal sm:leading-[1.15] bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
           >
             Harmony-Net
           </motion.h1>
