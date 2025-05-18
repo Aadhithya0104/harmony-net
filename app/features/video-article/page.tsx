@@ -3,111 +3,119 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useTheme } from '@/app/context/ThemeContext';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { FaSun, FaMoon, FaBars } from 'react-icons/fa';
 
 interface Article {
   id: string;
   title: string;
   description: string;
-  thumbnail: string;
-  type: 'blog' | 'video';
-  url: string;
   date: string;
   source: string;
+  type: 'blog' | 'video';
 }
 
 export default function VideoArticlePage() {
+  const { isDark, toggleTheme } = useTheme();
   const [articles, setArticles] = useState<Article[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [contentType, setContentType] = useState<'all' | 'blog' | 'video'>('all');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const generateArticles = async (apiKey: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant that generates articles about women&apos;s safety. Generate 5 different articles with titles, descriptions, and relevant information."
-            },
-            {
-              role: "user",
-              content: "Please generate 5 articles about women&apos;s safety, including topics like self-defense, travel safety, workplace safety, digital safety, and emergency preparedness. Each article should have a title, detailed description, and practical tips."
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 2000
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch from OpenAI API');
-      }
-
-      const data = await response.json();
-      const generatedContent = data.choices[0].message.content;
-
-      // Parse the generated content into articles
-      const parsedArticles = generatedContent.split('\n\n').map((content: string, index: number) => {
-        const lines = content.split('\n');
-        const title = lines[0].replace('Title: ', '');
-        const description = lines.slice(1).join('\n');
-        
-        return {
-          id: `article-${index}`,
-          title: title,
-          description: description,
-          type: 'blog',
-          url: '#',
-          date: new Date().toISOString().split('T')[0],
-          source: 'AI Generated'
-        };
-      });
-
-      setArticles(parsedArticles);
-    } catch (err) {
-      setError('Failed to generate articles. Please try again later.');
-      console.error('Error generating articles:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-    if (!apiKey) {
-      setError('OpenAI API key is not configured');
-      setLoading(false);
-      return;
-    }
-    generateArticles(apiKey);
+    // Simulated API call to fetch articles
+    const fetchArticles = async () => {
+      try {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Mock data
+        const mockArticles: Article[] = [
+          {
+            id: '1',
+            title: 'Understanding Personal Safety',
+            description: 'Learn about essential personal safety measures and how to stay protected in various situations.',
+            date: '2024-03-15',
+            source: 'Safety Blog',
+            type: 'blog'
+          },
+          {
+            id: '2',
+            title: 'Self-Defense Basics',
+            description: 'A comprehensive video guide on basic self-defense techniques for women.',
+            date: '2024-03-14',
+            source: 'Video Tutorial',
+            type: 'video'
+          },
+          // Add more mock articles as needed
+        ];
+        
+        setArticles(mockArticles);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to load articles. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
   }, []);
 
-  const handleArticleClick = (articleId: string) => {
-    router.push(`/features/video-article/${articleId}`);
-  };
-
   const filteredArticles = articles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         article.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = 
+      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      article.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
     const matchesType = contentType === 'all' || article.type === contentType;
+    
     return matchesSearch && matchesType;
   });
 
+  const handleArticleClick = (id: string) => {
+    router.push(`/article/${id}`);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/30 dark:bg-background/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <Link href="/">
+              <motion.h1 
+                initial={{ x: -100 }}
+                animate={{ x: 0 }}
+                className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent cursor-pointer"
+              >
+                Harmony-Net
+              </motion.h1>
+            </Link>
+            <div className="flex items-center gap-4">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleTheme}
+                className="p-2 rounded-full bg-purple-100 dark:bg-gray-800"
+              >
+                {isDark ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+              </motion.button>
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-800"
+              >
+                <FaBars className="text-xl" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
             Safety Resources
@@ -191,13 +199,7 @@ export default function VideoArticlePage() {
             ))}
           </div>
         )}
-
-        {!loading && filteredArticles.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            No articles found matching your criteria.
-          </div>
-        )}
       </div>
-    </div>
+    </main>
   );
 }

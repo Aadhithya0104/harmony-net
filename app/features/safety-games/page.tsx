@@ -237,6 +237,7 @@ export default function SafetyGames() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 0,
     height: typeof window !== 'undefined' ? window.innerHeight : 0,
@@ -275,7 +276,7 @@ export default function SafetyGames() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-100 via-purple-100 to-blue-100 p-8">
+    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
       {showConfetti && (
         <Confetti
           width={windowSize.width}
@@ -385,6 +386,6 @@ export default function SafetyGames() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

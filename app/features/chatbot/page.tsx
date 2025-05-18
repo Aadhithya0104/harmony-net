@@ -15,6 +15,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -82,7 +83,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className={`flex flex-col h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -115,15 +116,15 @@ export default function Chatbot() {
             >
               <div className="flex items-start space-x-2 max-w-[80%]">
                 {message.sender === 'bot' && (
-                  <div className="bg-indigo-100 p-2 rounded-full mt-1">
-                    <FiShield className="text-indigo-600" />
+                  <div className="bg-accent/20 p-2 rounded-full mt-1">
+                    <FiShield className="text-accent" />
                   </div>
                 )}
                 <div
                   className={`rounded-2xl p-4 ${
                     message.sender === 'user'
-                      ? 'bg-indigo-600 text-white rounded-br-none'
-                      : 'bg-white text-gray-800 rounded-bl-none shadow-sm'
+                      ? 'bg-accent text-white rounded-br-none'
+                      : 'bg-background/30 text-foreground rounded-bl-none shadow-sm'
                   }`}
                 >
                   <p className="text-sm leading-relaxed">{message.text}</p>
@@ -146,14 +147,14 @@ export default function Chatbot() {
               className="flex justify-start mb-4"
             >
               <div className="flex items-start space-x-2">
-                <div className="bg-indigo-100 p-2 rounded-full mt-1">
-                  <FiShield className="text-indigo-600" />
+                <div className="bg-accent/20 p-2 rounded-full mt-1">
+                  <FiShield className="text-accent" />
                 </div>
-                <div className="bg-white text-gray-800 rounded-2xl p-4 shadow-sm">
+                <div className="bg-background/30 text-foreground rounded-2xl p-4 shadow-sm">
                   <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
-                    <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '400ms' }}></div>
+                    <div className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
+                    <div className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: '400ms' }}></div>
                   </div>
                 </div>
               </div>
@@ -164,16 +165,16 @@ export default function Chatbot() {
       </div>
 
       {/* Input Area */}
-      <div className="bg-white border-t border-gray-100 py-4 px-4">
+      <div className="bg-background/30 backdrop-blur-md border-t border-border py-4 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center space-x-3 bg-gray-50 rounded-full px-4 py-2">
+          <div className="flex items-center space-x-3 bg-background/50 rounded-full px-4 py-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSend()}
               placeholder="Type your message..."
-              className="flex-1 bg-transparent border-none focus:outline-none text-gray-700 placeholder-gray-400 text-sm"
+              className="flex-1 bg-transparent border-none focus:outline-none text-foreground placeholder-muted-foreground text-sm"
               disabled={isLoading}
             />
             <button
@@ -181,8 +182,8 @@ export default function Chatbot() {
               disabled={isLoading}
               className={`p-2 rounded-full transition-colors ${
                 isLoading
-                  ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  ? 'bg-muted cursor-not-allowed'
+                  : 'bg-accent hover:bg-accent/90 text-white'
               }`}
             >
               <FiSend className="text-lg" />

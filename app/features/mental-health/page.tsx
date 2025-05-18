@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useTheme } from '@/app/context/ThemeContext';
+import Link from 'next/link';
+import { FaSun, FaMoon, FaBars } from 'react-icons/fa';
 
 const emotions = [
   { value: 'happy', label: '😊 Happy' },
@@ -59,10 +62,13 @@ const selfCareSuggestions = {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
 export default function MentalHealthPage() {
+  const { isDark, toggleTheme } = useTheme();
   const [selectedEmotion, setSelectedEmotion] = useState('');
   const [journalEntry, setJournalEntry] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [entries, setEntries] = useState<Array<{emotion: string, entry: string, date: string}>>([]);
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // Load saved entries from localStorage
@@ -128,184 +134,219 @@ export default function MentalHealthPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
-      >
-        <h1 className="text-4xl font-bold text-center mb-8">Mental Health Tracker</h1>
-        
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>How are you feeling today?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Select onValueChange={handleEmotionSelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your emotion" />
-                </SelectTrigger>
-                <SelectContent>
-                  {emotions.map((emotion) => (
-                    <SelectItem key={emotion.value} value={emotion.value}>
-                      {emotion.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Textarea
-                placeholder="Write about your feelings..."
-                value={journalEntry}
-                onChange={(e) => setJournalEntry(e.target.value)}
-                className="min-h-[100px]"
-              />
-
-              <Button 
-                className="w-full"
-                onClick={handleSaveEntry}
-                disabled={!selectedEmotion || !journalEntry}
+    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/30 dark:bg-background/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <Link href="/">
+              <motion.h1 
+                initial={{ x: -100 }}
+                animate={{ x: 0 }}
+                className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent cursor-pointer"
               >
-                Save Entry
-              </Button>
+                Harmony-Net
+              </motion.h1>
+            </Link>
+            <div className="flex items-center gap-4">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleTheme}
+                className="p-2 rounded-full bg-purple-100 dark:bg-gray-800"
+              >
+                {isDark ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+              </motion.button>
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-800"
+              >
+                <FaBars className="text-xl" />
+              </button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+      </nav>
 
-        {showSuggestions && selectedEmotion && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle>Self-Care Suggestions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {selfCareSuggestions[selectedEmotion as keyof typeof selfCareSuggestions].map(
-                    (suggestion, index) => (
-                      <motion.li
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="flex items-center gap-2"
-                      >
-                        <span className="text-primary">•</span>
-                        {suggestion}
-                      </motion.li>
-                    )
-                  )}
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-4xl mx-auto"
+        >
+          <h1 className="text-4xl font-bold text-center mb-8">Mental Health Tracker</h1>
+          
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>How are you feeling today?</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Select onValueChange={handleEmotionSelect}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your emotion" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {emotions.map((emotion) => (
+                      <SelectItem key={emotion.value} value={emotion.value}>
+                        {emotion.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-        {entries.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mt-8 space-y-8"
-          >
-            <h2 className="text-2xl font-bold">Your Mental Health Insights</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Emotional Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={getEmotionData()}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }: { name: string; percent: number }) => 
-                            `${name} ${(percent * 100).toFixed(0)}%`
-                          }
-                        >
-                          {getEmotionData().map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
+                <Textarea
+                  placeholder="Write about your feelings..."
+                  value={journalEntry}
+                  onChange={(e) => setJournalEntry(e.target.value)}
+                  className="min-h-[100px]"
+                />
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Journal Activity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={getTimeSeriesData()}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Area
-                          type="monotone"
-                          dataKey="entries"
-                          stroke="#8884d8"
-                          fill="#8884d8"
-                          fillOpacity={0.3}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <h2 className="text-2xl font-bold mt-8">Your Journal Entries</h2>
-            <div className="space-y-4">
-              {entries.slice().reverse().map((entry, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                <Button 
+                  className="w-full"
+                  onClick={handleSaveEntry}
+                  disabled={!selectedEmotion || !journalEntry}
                 >
-                  <Card>
-                    <CardHeader>
-                      <div className="flex justify-between items-center">
-                        <CardTitle className="flex items-center gap-2">
-                          {emotions.find(e => e.value === entry.emotion)?.label}
-                        </CardTitle>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(entry.date).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="whitespace-pre-wrap">{entry.entry}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </motion.div>
-    </div>
+                  Save Entry
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {showSuggestions && selectedEmotion && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Self-Care Suggestions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {selfCareSuggestions[selectedEmotion as keyof typeof selfCareSuggestions].map(
+                      (suggestion, index) => (
+                        <motion.li
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.1 }}
+                          className="flex items-center gap-2"
+                        >
+                          <span className="text-primary">•</span>
+                          {suggestion}
+                        </motion.li>
+                      )
+                    )}
+                  </ul>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {entries.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mt-8 space-y-8"
+            >
+              <h2 className="text-2xl font-bold">Your Mental Health Insights</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Emotional Distribution</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={getEmotionData()}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({ name, percent }: { name: string; percent: number }) => 
+                              `${name} ${(percent * 100).toFixed(0)}%`
+                            }
+                          >
+                            {getEmotionData().map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Journal Activity</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart
+                          data={getTimeSeriesData()}
+                          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="date" />
+                          <YAxis />
+                          <Tooltip />
+                          <Area
+                            type="monotone"
+                            dataKey="entries"
+                            stroke="#8884d8"
+                            fill="#8884d8"
+                            fillOpacity={0.3}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <h2 className="text-2xl font-bold mt-8">Your Journal Entries</h2>
+              <div className="space-y-4">
+                {entries.slice().reverse().map((entry, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <Card>
+                      <CardHeader>
+                        <div className="flex justify-between items-center">
+                          <CardTitle className="flex items-center gap-2">
+                            {emotions.find(e => e.value === entry.emotion)?.label}
+                          </CardTitle>
+                          <span className="text-sm text-muted-foreground">
+                            {new Date(entry.date).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="whitespace-pre-wrap">{entry.entry}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
+      </div>
+    </main>
   );
 }

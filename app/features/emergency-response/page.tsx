@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { FaPhone, FaMoon, FaSun, FaBars, FaAmbulance, FaHeartbeat, FaComments } from 'react-icons/fa';
 import { FaShieldAlt } from 'react-icons/fa';
 import { useState } from 'react';
+import { useTheme } from '@/app/context/ThemeContext';
 
 export default function EmergencyResponse() {
-  const [isDark, setIsDark] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const features = [
@@ -34,9 +35,9 @@ export default function EmergencyResponse() {
   ];
 
   return (
-    <main className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100'}`}>
+    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-white/30 dark:bg-gray-900/30">
+      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/30 dark:bg-background/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <Link href="/">
@@ -52,7 +53,7 @@ export default function EmergencyResponse() {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => setIsDark(!isDark)}
+                onClick={toggleTheme}
                 className="p-2 rounded-full bg-purple-100 dark:bg-gray-800"
               >
                 {isDark ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}

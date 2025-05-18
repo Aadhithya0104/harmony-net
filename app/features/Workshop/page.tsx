@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import { useTheme } from '@/app/context/ThemeContext';
+import { FaSun, FaMoon, FaBars } from 'react-icons/fa';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 interface Resource {
   id: string;
@@ -19,10 +23,12 @@ interface Resource {
 }
 
 export default function WorkshopPage() {
+  const { isDark, toggleTheme } = useTheme();
   const [resources, setResources] = useState<Resource[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedType, setSelectedType] = useState<'all' | 'video' | 'workshop'>('all');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const fetchResources = async (query: string = '') => {
     setLoading(true);
@@ -64,7 +70,41 @@ export default function WorkshopPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <main className={`min-h-screen ${isDark ? 'bg-background text-foreground' : 'bg-gradient-to-br from-background via-secondary/20 to-accent/20'}`}>
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/30 dark:bg-background/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <Link href="/">
+              <motion.h1 
+                initial={{ x: -100 }}
+                animate={{ x: 0 }}
+                className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent cursor-pointer"
+              >
+                Harmony-Net
+              </motion.h1>
+            </Link>
+            <div className="flex items-center gap-4">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleTheme}
+                className="p-2 rounded-full bg-purple-100 dark:bg-gray-800"
+              >
+                {isDark ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+              </motion.button>
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-purple-100 dark:hover:bg-gray-800"
+              >
+                <FaBars className="text-xl" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Rest of the component */}
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
@@ -183,6 +223,6 @@ export default function WorkshopPage() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }
