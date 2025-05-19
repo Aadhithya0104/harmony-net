@@ -12,7 +12,7 @@ export async function POST() {
   try {
     // You should store these in a database and fetch them
     const emergencyContacts = [
-      { name: 'Emergency Contact 1', phone: '+918072660284' }
+      { name: 'Emergency Contact 1', phone: '+918072660284' },
     ];
 
     const message = "EMERGENCY SOS: I need immediate assistance. This is an emergency alert.";
